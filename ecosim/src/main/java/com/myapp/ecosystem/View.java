@@ -16,10 +16,10 @@ public class View {
         System.out.println(line);
     }
 
-    public static void printTable(List<String> table){
+    public static void printOrganismTable(List<Organism> table){
         // Iterate and print each row from the table
-        for(String singleRow : table){
-            printLine(singleRow);
+        for(Organism singleRow : table){
+            System.out.println(singleRow.toString());
         }
     }
 
