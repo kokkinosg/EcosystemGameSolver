@@ -23,9 +23,6 @@ public class Organism{
         // Initialise lists so they’re never null
         this.eats    = new ArrayList<>();
         this.eatenBy = new ArrayList<>();
-        // Initialise the calories remaining
-        this.calRemainGive = this.calGive;
-        this.calRemainNeed = this.calNeed;
     }
 
     // Getters
@@ -52,12 +49,20 @@ public class Organism{
             this.type = "animal";
         }
     }
+    public void setCalNeed(float calNeed) {
+        if (calNeed < 0) throw new IllegalArgumentException("calNeed must be ≥ 0");
+        this.calNeed = calNeed;
+        this.calRemainNeed = calNeed;   // Initialy the remaining need clas are the same as the calNeed. 
+    }
+    
+    public void setCalGive(float calGive) {
+        if (calGive < 0) throw new IllegalArgumentException("calGive must be ≥ 0");
+        this.calGive = calGive;
+        this.calRemainGive = calGive;   // keep in sync
+    }
 
-    public void setCalNeed(float calNeed)           { this.calNeed = calNeed; }
-    public void setCalGive(float calGive)           { this.calGive = calGive; }
     public void setCalRemainNeed(float calRemainNeed)           { this.calRemainNeed = calRemainNeed; }
     public void setCalRemainGive(float calRemainGive)           { this.calRemainGive = calRemainGive; }
-
     public void setEats(List<String> eats)          { this.eats = (eats != null) ? new ArrayList<>(eats) : new ArrayList<>(); }
     public void setEatenBy(List<String> eatenBy)    { this.eatenBy = (eatenBy != null) ? new ArrayList<>(eatenBy) : new ArrayList<>(); }
     public void setCond1(String cond1)              { this.cond1 = cond1; }
