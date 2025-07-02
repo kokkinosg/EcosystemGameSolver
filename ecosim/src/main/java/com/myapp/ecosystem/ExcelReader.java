@@ -1,4 +1,4 @@
-package com.yourapp.ecosystem;
+package com.myapp.ecosystem;
 public class ExcelReader {
     
 }

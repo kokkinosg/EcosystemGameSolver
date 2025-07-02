@@ -1,4 +1,4 @@
-package com.yourapp.ecosystem;
+package com.myapp.ecosystem;
 // This is the class which will produce animals and producer
 import java.util.ArrayList;
 import java.util.List;

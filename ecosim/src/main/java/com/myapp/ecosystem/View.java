@@ -1,4 +1,4 @@
-package com.yourapp.ecosystem;
+package com.myapp.ecosystem;
 // My view class 
 
 public class View {
