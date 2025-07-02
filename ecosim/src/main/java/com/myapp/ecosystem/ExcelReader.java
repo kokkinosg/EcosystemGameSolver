@@ -26,40 +26,51 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
  */
 public final class ExcelReader {
 
-    private static final String LIST_DELIM = ",";   // split eats / eatenBy cells
+    private static final String LIST_DELIM = ",";   // The input on split eats / eatenBy cells is separated with ,
 
-    /** Returns the organisms contained in file <code>path</code>. */
-    public static List<Organism> load(Path path) throws IOException {
+    // Returns the organisms contained in the specified file
+    public static List<Organism> load(Path path) {
+        List<Organism> out = new ArrayList<>();
+
         try (InputStream in = Files.newInputStream(path);
-             Workbook wb   = WorkbookFactory.create(in)) {
+            Workbook     wb = WorkbookFactory.create(in)) {
 
+            // Data must be on first sheet
             Sheet sheet = wb.getSheetAt(0);
-            if (sheet == null) throw new IOException("Workbook is empty");
+
+            if (sheet == null) {
+                System.err.println("Workbook is empty: " + path);
+                return out;
+            }
 
             // header → column index map
-            Map<String,Integer> col = mapHeader(sheet.getRow(0));
+            Map<String, Integer> col = mapHeader(sheet.getRow(0));
 
-            List<Organism> out = new ArrayList<>();
             for (int r = 1; r <= sheet.getLastRowNum(); r++) {
                 Row row = sheet.getRow(r);
-                if (row == null) continue;               // skip blank lines
+                if (row == null) continue;           // skip blank lines
 
                 Organism o = new Organism();
-                o.setName   (str(row,col,"name"));
-                o.setType   (str(row,col,"type"));
-                o.setCalNeed(flt(row,col,"calneed"));
-                o.setCalGive(flt(row,col,"calgive"));
-                o.setEats     (list(row,col,"eats"));
-                o.setEatenBy  (list(row,col,"eatenby"));
-                o.setCond1(str(row,col,"cond1"));
-                o.setCond2(str(row,col,"cond2"));
-                o.setCond3(str(row,col,"cond3"));
-                o.setCond4(str(row,col,"cond4"));
+                o.setName     (str (row, col, "name"));
+                o.setType     (str (row, col, "type"));
+                o.setCalNeed  (flt (row, col, "calneed"));
+                o.setCalGive  (flt (row, col, "calgive"));
+                o.setEats     (list(row, col, "eats"));
+                o.setEatenBy  (list(row, col, "eatenby"));
+                o.setCond1    (str (row, col, "cond1"));
+                o.setCond2    (str (row, col, "cond2"));
+                o.setCond3    (str (row, col, "cond3"));
+                o.setCond4    (str (row, col, "cond4"));
 
                 out.add(o);
             }
-            return out;
+
+        } catch (IOException e) {
+            System.err.println("Error reading " + path + ": " + e.getMessage());
+            e.printStackTrace();
         }
+
+        return out;
     }
 
     /* ── helpers ───────────────────────────────────────────────────────── */
