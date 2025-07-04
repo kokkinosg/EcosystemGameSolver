@@ -2,6 +2,7 @@ package com.myapp.ecosystem;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -41,14 +42,24 @@ public final class Controller {
                 return;
             }
 
+            // Print a clean line 
+            System.out.println();
             // ── 3  present a quick summary to the user ──────────────────
             View.printLine("✅  Loaded " + tabulatedData.size() + " organisms.");
             View.printOrganismTable(tabulatedData);
 
-            // - 4 Do a quick check to identify which animals are useless
-            for(Organism organism : tabulatedData){
-                Logic.canPredatorSatisfyCalNeed(organism, tabulatedData);
-            }
+            // Print a clean line 
+            System.out.println();
+
+            // // - 4 Do a quick check to identify which animals are useless in a first iteration
+            // for(Organism organism : tabulatedData){
+            //     Logic.canPredatorSatisfyCalNeed(organism, tabulatedData);
+            // }
+
+            // - 5 Get rid of all useless animal 
+            List<Organism> processedList = new ArrayList<>();
+            processedList = Logic.eliminateUnusableAnimals(tabulatedData);
+            View.printAllNames(processedList);
         }
     }
 }

@@ -20,6 +20,17 @@ public class View {
         System.out.println(line);
     }
 
+    // Method to print all names of the organisms 
+    public static void printAllNames(List<Organism> organismList){
+
+        System.out.println("---------------------");
+        System.out.println("These are the names of the organisms in the data:");
+        System.out.println("");
+        for(Organism organism : organismList){
+            System.out.println(organism.getName());
+        }
+    }
+
     /* ------------------------------------------------------------------
      * Pretty-print a list of Organism objects as an aligned table
      * showing every numeric and text field.
