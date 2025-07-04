@@ -34,6 +34,27 @@ public class Logic {
         return remaining;
     }
 
+    // Method which means an animal feeds on others.
+
+    // Helper method to find the name of the animal which eats now. This is the animal with the highest calories provided.
+    public static String nameOfAnimalEatingNow(List<Organism> organismsList){
+        // Start with an empty string. 
+        String name = "";
+        float calRemainingGivePrev = 0;
+
+        // Go over each animal and compare the calories it provides. At the end it will ensure that we got the name of the organism with the highest 
+        for(Organism organism : organismsList){
+            // Get the calories given by the current organism in the list
+            float calRemainingGiveCurrent = organism.getCalRemainGive();
+            //Compare it with the cal given of hte previous prey and if it is larger, then this animal feeds before the previous
+            if(calRemainingGiveCurrent>calRemainingGivePrev){
+                name = organism.getName();
+            }
+            calRemainingGivePrev = calRemainingGiveCurrent;
+        }
+        return name;
+    }
+
     // Helper method which takes an Organism and sees if it can be satisfied by its food sources
     public static boolean canPredatorSatisfyCalNeed(Organism predator, List<Organism> organismsList){
         // First check that the predator is an animal and not a producer because producers have 0 needs and eat nothing. If it is a producer do nothing. 
@@ -69,4 +90,11 @@ public class Logic {
         return true;
     }
     
+    // Helper method to check if an Organism is dead which happens when the remaining calories given is 0
+    public static boolean isOrganismDead(Organism organism){
+        if (organism.getCalRemainGive() <= 0){
+            return true;
+        }
+        return false;
+    }
 }
