@@ -44,6 +44,11 @@ public final class Controller {
             // ── 3  present a quick summary to the user ──────────────────
             View.printLine("✅  Loaded " + tabulatedData.size() + " organisms.");
             View.printOrganismTable(tabulatedData);
+
+            // - 4 Do a quick check to identify which animals are useless
+            for(Organism organism : tabulatedData){
+                Logic.canPredatorSatisfyCalNeed(organism, tabulatedData);
+            }
         }
     }
 }
