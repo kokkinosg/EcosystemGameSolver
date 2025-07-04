@@ -76,7 +76,7 @@ public final class ExcelReader {
         return out;
     }
 
-    /* ── helpers ───────────────────────────────────────────────────────── */
+    // Helper Functions
 
         /** Build a map: lowercase-header-name → column index (0-based). */
     private static Map<String, Integer> mapHeader(Row header) {
@@ -88,12 +88,32 @@ public final class ExcelReader {
         return m;
     }
 
-    /** Read a cell as String; return "" if the column is missing or blank. */
     private static String str(Row row, Map<String,Integer> col, String key) {
-        Integer idx = col.get(key);                                   // which column?
-        if (idx == null) return "";                                   // header not found
+
+        // Get the column number which matches to the appropriate header. 
+        Integer idx = col.get(key);
+        
+        // Return empty string if the header was not found in description
+        if (idx == null) return "";
+
+        // Return the value of hte cell at that index
         Cell c = row.getCell(idx, Row.MissingCellPolicy.RETURN_BLANK_AS_NULL);
-        return (c == null) ? "" : c.getStringCellValue().trim();      // blank → ""
+
+        // Perform a null check
+        if (c == null) return "";
+
+        // Check what is the cell type and if it numeric convert it to a string 
+
+        switch (c.getCellType()){
+            case STRING:
+                return c.getStringCellValue().trim();
+            case NUMERIC:
+                return String.valueOf(c.getNumericCellValue()).trim();
+            case BOOLEAN:
+                return String.valueOf(c.getBooleanCellValue());
+            default:
+                return "";
+        }
     }
 
     /** Read a cell as float; blank / bad number → 0 f. */
@@ -103,6 +123,7 @@ public final class ExcelReader {
         try { return Float.parseFloat(s); }      // parse numeric text
         catch (NumberFormatException e) { return 0f; }  // bad value → 0
     }
+
 
     /** Read a comma-separated cell into a trimmed List<String>. */
     private static List<String> list(Row row, Map<String,Integer> col, String key) {

@@ -79,6 +79,8 @@ public class Organism{
                 ", type='" + type + '\'' +
                 ", calNeed=" + calNeed +
                 ", calGive=" + calGive +
+                ", calRemainingGive=" + calRemainGive +
+                ", calRemainingNeed=" + calRemainNeed +
                 ", eats=" + eats +
                 ", eatenBy=" + eatenBy +
                 ", cond1='" + cond1 + '\'' +
