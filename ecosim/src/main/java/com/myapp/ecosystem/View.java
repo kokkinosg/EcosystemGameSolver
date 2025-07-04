@@ -32,7 +32,7 @@ public class View {
         }
 
         /* 1 ── column headers (11 of them) */
-        String[] hdr = { "n=ame", "type",
+        String[] hdr = { "name", "type",
                          "calNeed", "calGive",
                          "calRemainGive", "calRemainNeed",
                          "eats", "eatenBy",
