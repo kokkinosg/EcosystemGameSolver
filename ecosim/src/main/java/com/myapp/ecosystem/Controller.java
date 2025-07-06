@@ -60,6 +60,8 @@ public final class Controller {
             List<Organism> processedList = new ArrayList<>();
             processedList = Logic.eliminateUnusableAnimals(tabulatedData);
             View.printAllNames(processedList);
+
+            // - 6 Get a sample of 5 animals and 3 produces 
         }
     }
 }

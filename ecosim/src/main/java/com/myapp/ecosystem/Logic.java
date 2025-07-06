@@ -3,6 +3,7 @@
 package com.myapp.ecosystem;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -193,7 +194,7 @@ public class Logic {
                     continue;
                 } 
                 // If it exsits, assume that it is eaten by the predator
-                calRemainingNeed = calRemainingNeed - prey.getCalGive();
+                calRemainingNeed = calRemainingNeed - prey.getCalRemainGive();
                 
                 // Early exit if the predator is satisfied already
                 if (calRemainingNeed <= 0) return true;
@@ -212,5 +213,53 @@ public class Logic {
             return true;
         }
         return false;
+    }
+
+
+    /**
+     * Build an 8-organism sample with the following rules:
+     *
+     * 1. **Keep every producer** if the total number of producers ≤ 8.
+     *    • Fill the remaining slots (8 – #producers) with random animals.
+     * 2. **If there are > 8 producers**, pick a random subset of **exactly 8**
+     *    producers and return them (no animals included).
+     * 3. If producers ≤ 8 but the pool does not contain enough animals to
+     *    reach eight organisms, the method returns {@code List.of()}.
+     *
+     * The original list is never modified.
+     */
+    public static List<Organism> sampleUpToEight(List<Organism> pool) {
+
+        if (pool == null || pool.isEmpty()) return List.of();
+
+        // ── Split pool into producers and animals ───────────────────────────
+        List<Organism> producers = pool.stream()
+                .filter(o -> "producer".equalsIgnoreCase(o.getType()))
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        List<Organism> animals = pool.stream()
+                .filter(o -> "animal".equalsIgnoreCase(o.getType()))
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        // ── Case 1: more than 8 producers → return 8 random producers ───────
+        if (producers.size() > 8) {
+            Collections.shuffle(producers);              // random subset
+            return new ArrayList<>(producers.subList(0, 8));
+        }
+
+        // ── Case 2: ≤ 8 producers → need (8 - p) animals ────────────────────
+        int neededAnimals = 8 - producers.size();
+
+        if (animals.size() < neededAnimals) {
+            // Not enough animals to build a complete group of eight
+            return List.of();
+        }
+
+        Collections.shuffle(animals);
+        List<Organism> sample = new ArrayList<>(8);
+        sample.addAll(producers);
+        sample.addAll(animals.subList(0, neededAnimals));
+
+        return sample;
     }
 }
