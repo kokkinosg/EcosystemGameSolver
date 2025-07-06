@@ -38,25 +38,39 @@ public class Logic {
     public static void performFeed(List<Organism> organismsList, String nameAnimalEatingNow){
 
         
-        // Prey names list, initially empty
-        List<String> preyNames = new ArrayList<>();
-        // Get the names of the prey
-        preyNames = organismsList.(o -> o.getName().equalsIgnoreCase(predator.getName()));
+        // Prey names list, i
 
     }
 
     // TO BE PRIVATE Helper method to get a list of prey 
     public static List<Organism> listOfPrey(List<Organism> organismList, String predatorName){
+        
         // Get the predator by its name
-        Organism predator = organismList.stream()
-                .filter(o -> o.getName().equalsIgnoreCase(predatorName))
-                .findFirst()
-                .orElse(null);
+        Organism predator = getOrganismByName(predatorName, organismList);
+
+        // Get a list of preyNames
+        List<String> preyNames = predator.getEats();
+
+        // Declare an organism list 
+        List<Organism> preyList = new ArrayList<>();
+
+        // Add each element 
+        for (String name:preyNames){
+
+            // Check if the organism exists in in hte organism list. Sometimes organisms may prey to animals not in the list
+            Organism prey = getOrganismByName(name, organismList);
+
+            // Do a null check. If not null, add it to the list 
+            if (prey != null){
+                preyList.add(prey);
+            }
+        }
+        return preyList;
     }
 
-    // Get the organism by name 
+    //  TO BE PRIVATE Get the organism by name 
     public static Organism getOrganismByName(String name, List<Organism> organismList){
-        // Get the predator by its name
+        // Get the organism by its name. If the organism cannot be found, return null 
         Organism organism = organismList.stream()
                 .filter(o -> o.getName().equalsIgnoreCase(name))
                 .findFirst()

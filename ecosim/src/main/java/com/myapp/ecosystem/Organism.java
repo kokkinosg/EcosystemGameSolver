@@ -14,6 +14,7 @@ public class Organism{
     private float calRemainNeed;       // calories remaining to eat. At start is the same as calNeed
     private List<String> eats;         // names of organisms it eats
     private List<String> eatenBy;      // names of organisms that eat it
+    private boolean isHungry;          // At the start all animals are hungry. Once they eat, they are NOT hungry 
     private String cond1;              // habitat condition #1 eg: Temperature or Humidity
     private String cond2;              // habitat condition #2
     private String cond3;              // habitat condition #3
@@ -35,6 +36,7 @@ public class Organism{
     public float  getCalRemainGive()   { return calRemainGive; }
     public List<String> getEats()     { return eats; }
     public List<String> getEatenBy()  { return eatenBy; }
+    public boolean  isHungry() {return isHungry;}
     public String getCond1()     { return cond1; }
     public String getCond2()     { return cond2; }
     public String getCond3()     { return cond3; }
@@ -66,6 +68,7 @@ public class Organism{
     public void setCalRemainGive(float calRemainGive)           { this.calRemainGive = calRemainGive; }
     public void setEats(List<String> eats)          { this.eats = (eats != null) ? new ArrayList<>(eats) : new ArrayList<>(); }
     public void setEatenBy(List<String> eatenBy)    { this.eatenBy = (eatenBy != null) ? new ArrayList<>(eatenBy) : new ArrayList<>(); }
+    public void setIsHungry(boolean isHungry)       { this.isHungry = isHungry;}
     public void setCond1(String cond1)              { this.cond1 = cond1; }
     public void setCond2(String cond2)              { this.cond2 = cond2; }
     public void setCond3(String cond3)              { this.cond3 = cond3; }
