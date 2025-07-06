@@ -38,7 +38,7 @@ public class Organism{
     public float  getCalRemainGive()   { return calRemainGive; }
     public List<String> getEats()     { return eats; }
     public List<String> getEatenBy()  { return eatenBy; }
-    public boolean  isHungry() {return isHungry;}
+    public boolean  getIsHungry() {return isHungry;}
     public String getCond1()     { return cond1; }
     public String getCond2()     { return cond2; }
     public String getCond3()     { return cond3; }

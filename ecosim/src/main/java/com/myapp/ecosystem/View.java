@@ -46,7 +46,7 @@ public class View {
         String[] hdr = { "name", "type",
                          "calNeed", "calGive",
                          "calRemainGive", "calRemainNeed",
-                         "eats", "eatenBy",
+                         "eats", "eatenBy", "is hungry?",
                          "cond1", "cond2", "cond3", "cond4" };
 
         /* 2 ── collect each organism into a String[] row */
@@ -61,6 +61,7 @@ public class View {
                 String.valueOf(o.getCalRemainNeed()),
                 String.join(", ", o.getEats()),
                 String.join(", ", o.getEatenBy()),
+                String.valueOf(o.getIsHungry()),
                 o.getCond1(),
                 o.getCond2(),
                 o.getCond3(),
