@@ -164,8 +164,9 @@ public class Logic {
             //Compare it with the cal given of hte previous prey and if it is larger, then this animal feeds before the previous
             if(calRemainingGiveCurrent>calRemainingGivePrev){
                 name = organism.getName();
+                // Update the previous best with current best
+                calRemainingGivePrev = calRemainingGiveCurrent;
             }
-            calRemainingGivePrev = calRemainingGiveCurrent;
         }
         return name;
     }
