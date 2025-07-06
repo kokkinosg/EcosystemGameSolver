@@ -3,7 +3,9 @@
 package com.myapp.ecosystem;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Logic {
 
@@ -37,10 +39,47 @@ public class Logic {
     // Method which performs the feeding operation. 
     public static void performFeed(List<Organism> organismsList, String nameAnimalEatingNow){
 
-        
+
         // Prey names list, i
 
     }
+
+
+    // Helper method to sort the preys in order of highest amount of calories provide 
+    private static List<Organism> sortedPreyByRemainCalProvided(List<Organism> unsortedPreyList) {
+
+        List<Organism> sortedList =  unsortedPreyList.stream()
+                // compare by getCalRemainGive() – use getCalGive() if you prefer total capacity
+                .sorted(Comparator.comparing(Organism::getCalRemainGive).reversed())// largest first
+                .collect(Collectors.toList()); // new List, original untouched
+        
+        return sortedList;
+    }
+
+    // Helper method to count how many preys share the same number of calories remianing to give as the top prey with the highest remaining claories given.
+    // The argument MUST be a sorted prey list by the highest order of calories remaining to give.
+    private static int countPreysWithSameCalRemainGive(List<Organism> sortedPreyList){
+
+        // Null Check 
+        if (sortedPreyList == null || sortedPreyList.isEmpty()) {
+            System.out.println("Cannot count preys with the same number of calories given because the input list is null or empty");
+            return 0;
+        }
+        // The default is 1 be cause there is always one prey
+        int sameCalProvCounter = 1;
+
+        // Get the highest number of calories which by default is in the same position
+        float topRemainCalGive = sortedPreyList.get(0).getCalRemainGive();
+
+        // Loop through the next elemtns and count how many are equal, skip the first elemtn
+        for (int i = 1; i < sortedPreyList.size(); i++ ){
+            if (sortedPreyList.get(i).getCalRemainGive() == topRemainCalGive){
+                // Increase the counter by 1
+                sameCalProvCounter++;
+            }
+        }
+        return sameCalProvCounter;
+    }    
 
     // TO BE PRIVATE Helper method to get a list of prey 
     public static List<Organism> listOfPrey(List<Organism> organismList, String predatorName){
@@ -98,8 +137,8 @@ public class Logic {
         return name;
     }
 
-    // TO BE PRIVATE Helper method which takes an Organism and sees if it can be satisfied by its food sources
-    public static boolean canPredatorSatisfyCalNeed(Organism predator, List<Organism> organismsList){
+    //  Helper method which takes an Organism and sees if it can be satisfied by its food sources
+    private static boolean canPredatorSatisfyCalNeed(Organism predator, List<Organism> organismsList){
         // First check that the predator is an animal and not a producer because producers have 0 needs and eat nothing. If it is a producer do nothing. 
         if (predator.getType() == "animal"){
             // Create a list of food sources from this organism
