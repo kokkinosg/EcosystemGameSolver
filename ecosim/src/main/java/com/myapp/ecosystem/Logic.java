@@ -36,17 +36,50 @@ public class Logic {
         return remaining;
     }
 
-    // Method which performs the feeding operation. 
-    public static void performFeed(List<Organism> organismsList, String nameAnimalEatingNow){
+    // Method which performs the feeding operation. It first checks the prey of the predatorm, then sorts them in order  
+    public static void performFeed(List<Organism> preyList, Organism predator){
 
+        System.out.println("--- Feeding Step Initiated ----");
+        System.out.println("Predator: " + predator.getName() + " -> Calories Needed: " + predator.getCalRemainNeed());
 
-        // Prey names list, i
+        // Sort the preyList by the number of Remaining calories to give
+        preyList = sortPreyByRemainCalProvided(preyList);
 
+        // Count how many preys have the same number of highest calroeis 
+        int preyDivisorCounter = countPreysWithSameCalRemainGive(preyList);
+
+        // Get how many calories to reduce eachs preys calories provided
+        float calorieReduction = predator.getCalRemainNeed() / preyDivisorCounter;
+
+        // Counter of total calories eaten 
+        float totalEaten = 0;
+
+        // Reduce all preys with hte same number of calories by that amount 
+        // Go over the all preys which have hte highest calories and subtract the calories needed by the predator
+        for(int i = 0; i < preyDivisorCounter; i++){
+            // Get the calories remaining for each prey
+            float calRemainGive = preyList.get(i).getCalRemainGive();
+            // Print the prey details
+            System.out.println("Prey: " + preyList.get(i).getName() + " -> Before Feed Remaining Calories to Give" + calRemainGive);
+            // Make the subtraction
+            float resultCalRemainGive = calRemainGive - calorieReduction;
+            // Update the calories remainig to give 
+            preyList.get(i).setCalRemainGive(resultCalRemainGive);
+            // Print the prey details
+            System.out.println("Prey: " + preyList.get(i).getName() + " -> After Feed Remaining Calories to Give" + preyList.get(i).getCalRemainGive());
+            // Update the total calories eaten 
+            totalEaten += calorieReduction;
+        }
+
+        // Update the predators calories needed 
+        predator.setCalRemainNeed(predator.getCalRemainNeed()-totalEaten);
+        // Print the final results
+        System.out.println("Predator: " + predator.getName() + " -> Calories Needed After Feeding: " + predator.getCalRemainNeed());
+        System.out.println("--- Feeding step concluded ----");
     }
 
-
     // Helper method to sort the preys in order of highest amount of calories provide 
-    private static List<Organism> sortedPreyByRemainCalProvided(List<Organism> unsortedPreyList) {
+    private static List<Organism> sortPreyByRemainCalProvided(List<Organism> unsortedPreyList) {
 
         List<Organism> sortedList =  unsortedPreyList.stream()
                 // compare by getCalRemainGive() – use getCalGive() if you prefer total capacity
@@ -140,7 +173,7 @@ public class Logic {
     //  Helper method which takes an Organism and sees if it can be satisfied by its food sources
     private static boolean canPredatorSatisfyCalNeed(Organism predator, List<Organism> organismsList){
         // First check that the predator is an animal and not a producer because producers have 0 needs and eat nothing. If it is a producer do nothing. 
-        if (predator.getType() == "animal"){
+        if ("animal".equalsIgnoreCase(predator.getType())){
             // Create a list of food sources from this organism
             List<String> foodSources = predator.getEats();
             // Get the remaining calories needed of this animal. It will be the same as the calories needed. 
