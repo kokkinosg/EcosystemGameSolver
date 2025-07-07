@@ -61,7 +61,36 @@ public final class Controller {
             processedList = Logic.eliminateUnusableAnimals(tabulatedData);
             View.printAllNames(processedList);
 
-            // - 6 Get a sample of 5 animals and 3 produces 
+            // Define a success boolean where when true it means we found a sustainable chain of 8 animals
+            boolean isChainSustainable = false;
+
+            // Keep looping until we find a succesful chain.
+            while(isChainSustainable == false ){
+
+                // - 6 Get a sample of 5 animals and 3 produces 
+                List<Organism> sampleOrganisms = Logic.sampleUpToEight(processedList);
+
+
+                // - 7 Find the animal which will eat now
+                String predatorName = Logic.nameOfAnimalHighestCaloriesProvided(sampleOrganisms);
+                Organism predator = Logic.getOrganismByName(predatorName, sampleOrganisms);
+
+                // - 8 Check that it is alive
+                if(!Logic.isOrganismDead(predator)){
+                    // - 8 Find the prey of that animal from our sample of Organisms
+                    List<Organism> prey = Logic.listOfPrey(sampleOrganisms, predatorName);
+
+                    // - 9 Perform feed 
+                    Logic.performFeed(prey, predator);
+                } else {
+                    break;
+                }
+
+            }
+
+            
+
+            
         }
     }
 }

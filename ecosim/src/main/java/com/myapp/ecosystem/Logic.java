@@ -10,7 +10,9 @@ import java.util.stream.Collectors;
 
 public class Logic {
 
-    // // This method removes all animals which can not be satisfied wafter eating all their food sources. 
+    //#region Initial data reduction before testing feeding.
+
+    // This method removes all animals which can not be satisfied wafter eating all their food sources. 
     public static List<Organism> eliminateUnusableAnimals(List<Organism> organismsList){
 
         // Create a copy of the organismList to mutate it 
@@ -36,6 +38,43 @@ public class Logic {
         // Return the remaing list
         return remaining;
     }
+
+    //  Helper method which takes an Organism and sees if it can be satisfied by its food sources
+    private static boolean canPredatorSatisfyCalNeed(Organism predator, List<Organism> organismsList){
+        // First check that the predator is an animal and not a producer because producers have 0 needs and eat nothing. If it is a producer do nothing. 
+        if ("animal".equalsIgnoreCase(predator.getType())){
+            // Create a list of food sources from this organism
+            List<String> foodSources = predator.getEats();
+            // Get the remaining calories needed of this animal. It will be the same as the calories needed. 
+            float calRemainingNeed = predator.getCalRemainNeed();
+
+            for(String preyName: foodSources){
+                // find the prey organism by name (case-insensitive match). if it doesnt exist return null. 
+                Organism prey = organismsList.stream()
+                        .filter(o -> o.getName().equalsIgnoreCase(preyName))
+                        .findFirst()
+                        .orElse(null);
+
+                // Check if it exsits in the data, if not it might be because it wouldnt survive at that environment.
+                if (prey == null){
+                    System.out.println(preyName + " --- does not exist in the sample data");
+                    continue;
+                } 
+                // If it exsits, assume that it is eaten by the predator
+                calRemainingNeed = calRemainingNeed - prey.getCalRemainGive();
+                
+                // Early exit if the predator is satisfied already
+                if (calRemainingNeed <= 0) return true;
+            }
+            // If the predator has not been satisfied by the last prey in hte list, then it wont be satisfied and its a useless animal.
+            System.out.println(predator.getName() + " --- calorific needs will never be satisfied. Remove it from the data. Unusuable Animal");
+            return false;     
+        }
+        // return true if the organism is a producer
+        return true;
+    }
+    
+    //#endregion
 
     // Method which performs the feeding operation. It first checks the prey of the predatorm, then sorts them in order  
     public static void performFeed(List<Organism> preyList, Organism predator){
@@ -74,8 +113,17 @@ public class Logic {
 
         // Update the predators calories needed 
         predator.setCalRemainNeed(predator.getCalRemainNeed()-totalEaten);
+
+        // Update the predator's hunger status. 
+        // If there are no more calories needed then the predator is not hungry
+        if(predator.getCalRemainNeed()<=0){
+            predator.setIsHungry(false);
+        } else {
+            predator.setIsHungry(true);
+        }
         // Print the final results
         System.out.println("Predator: " + predator.getName() + " -> Calories Needed After Feeding: " + predator.getCalRemainNeed());
+        System.out.println("Predator: " + predator.getName() + "is Hungry?" + predator.getIsHungry());
         System.out.println("--- Feeding step concluded ----");
     }
 
@@ -172,49 +220,14 @@ public class Logic {
         return name;
     }
 
-    //  Helper method which takes an Organism and sees if it can be satisfied by its food sources
-    private static boolean canPredatorSatisfyCalNeed(Organism predator, List<Organism> organismsList){
-        // First check that the predator is an animal and not a producer because producers have 0 needs and eat nothing. If it is a producer do nothing. 
-        if ("animal".equalsIgnoreCase(predator.getType())){
-            // Create a list of food sources from this organism
-            List<String> foodSources = predator.getEats();
-            // Get the remaining calories needed of this animal. It will be the same as the calories needed. 
-            float calRemainingNeed = predator.getCalRemainNeed();
 
-            for(String preyName: foodSources){
-                // find the prey organism by name (case-insensitive match). if it doesnt exist return null. 
-                Organism prey = organismsList.stream()
-                        .filter(o -> o.getName().equalsIgnoreCase(preyName))
-                        .findFirst()
-                        .orElse(null);
-
-                // Check if it exsits in the data, if not it might be because it wouldnt survive at that environment.
-                if (prey == null){
-                    System.out.println(preyName + " --- does not exist in the sample data");
-                    continue;
-                } 
-                // If it exsits, assume that it is eaten by the predator
-                calRemainingNeed = calRemainingNeed - prey.getCalRemainGive();
-                
-                // Early exit if the predator is satisfied already
-                if (calRemainingNeed <= 0) return true;
-            }
-            // If the predator has not been satisfied by the last prey in hte list, then it wont be satisfied and its a useless animal.
-            System.out.println(predator.getName() + " --- calorific needs will never be satisfied. Remove it from the data. Unusuable Animal");
-            return false;     
-        }
-        // return true if the organism is a producer
-        return true;
-    }
-    
-    // TO BE PRIVATE Helper method to check if an Organism is dead which happens when the remaining calories given is 0
+    //  Helper method to check if an Organism is dead which happens when the remaining calories given is 0
     public static boolean isOrganismDead(Organism organism){
         if (organism.getCalRemainGive() <= 0){
             return true;
         }
         return false;
     }
-
 
     /**
      * Build an 8-organism sample with the following rules:
@@ -262,4 +275,21 @@ public class Logic {
 
         return sample;
     }
+
+    // Method to reset all orgnanisms to initial status 
+    static void resetOrganisms(List<Organism> pool) {
+
+        for (Organism o : pool) {
+            o.setCalRemainGive(o.getCalGive());
+            o.setCalRemainNeed(o.getCalNeed());
+            
+            // Set the hunger status of animals and producers
+            if("animal".equalsIgnoreCase(o.getType())){
+                o.setIsHungry(true);
+            } else {
+                o.setIsHungry(false);
+            }
+        }
+    }
 }
+
