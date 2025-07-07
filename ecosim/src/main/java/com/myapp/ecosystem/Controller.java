@@ -64,31 +64,46 @@ public final class Controller {
             // Define a success boolean where when true it means we found a sustainable chain of 8 animals
             boolean isChainSustainable = false;
 
-            // Keep looping until we find a succesful chain.
-            while(isChainSustainable == false ){
+            outer:
+            while (!isChainSustainable) {
 
-                // - 6 Get a sample of 5 animals and 3 produces 
-                List<Organism> sampleOrganisms = Logic.sampleUpToEight(processedList);
+                // Ensure that we start with fresh organism satus and calories
+                Logic.resetOrganisms(processedList);       
+                // 6. Get a sample of 8 organisms (3 produces + 5 random animals from the processed list)
+                List<Organism> sample = Logic.sampleUpToEight(processedList);
 
+                // Check that we got some data
+                if (sample.isEmpty()) continue;             // not enough animals
 
-                // - 7 Find the animal which will eat now
-                String predatorName = Logic.nameOfAnimalHighestCaloriesProvided(sampleOrganisms);
-                Organism predator = Logic.getOrganismByName(predatorName, sampleOrganisms);
+                // 7. Start 5 feeding cycles, one for each animal.
+                for (int cycle = 0; cycle < 5; cycle++) {
 
-                // - 8 Check that it is alive
-                if(!Logic.isOrganismDead(predator)){
-                    // - 8 Find the prey of that animal from our sample of Organisms
-                    List<Organism> prey = Logic.listOfPrey(sampleOrganisms, predatorName);
+                    // Get the name of the animal which eats now. It is the one with hte highest calories provided
+                    String predatorName = Logic.nameOfAnimalHighestCaloriesProvided(sample);
+                    Organism predator   = Logic.getOrganismByName(predatorName, sample);
 
-                    // - 9 Perform feed 
-                    Logic.performFeed(prey, predator);
-                } else {
-                    break;
+                    // If the predator is dead, break the loop. The ecosystem failed. 
+                    if (predator == null || Logic.isOrganismDead(predator)) break;
+
+                    // Get the prey of that predator
+                    List<Organism> prey = Logic.listOfPrey(sample, predatorName);
+                    // If there is no prey, then break because it will never satisfy its needs.
+                    if (prey.isEmpty()) break;
+
+                    boolean ok = Logic.performFeed(prey, predator);
+                    if (!ok) continue outer;                // predator died -> resample
                 }
 
-            }
+                boolean allFed = sample.stream()
+                        .noneMatch(Organism::getIsHungry);
 
-            
+                if (allFed) {
+                    System.out.println("✅ Sustainable chain found");
+                    View.printOrganismTable(sample);
+                    break;                                  // success
+                }
+                // else: try another sample
+            }
 
             
         }

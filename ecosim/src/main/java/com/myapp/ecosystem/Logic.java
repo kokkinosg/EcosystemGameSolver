@@ -76,8 +76,8 @@ public class Logic {
     
     //#endregion
 
-    // Method which performs the feeding operation. It first checks the prey of the predatorm, then sorts them in order  
-    public static void performFeed(List<Organism> preyList, Organism predator){
+    // Method which performs the feeding operation. Returns true if the predator was satisfied and hte prey didnt die. 
+    public static boolean performFeed(List<Organism> preyList, Organism predator){
 
         System.out.println("--- Feeding Step Initiated ----");
         System.out.println("Predator: " + predator.getName() + " -> Calories Needed: " + predator.getCalRemainNeed());
@@ -94,6 +94,9 @@ public class Logic {
         // Counter of total calories eaten 
         float totalEaten = 0;
 
+        // Check to see if prey died 
+        boolean preyDied = false;
+
         // Reduce all preys with hte same number of calories by that amount 
         // Go over the all preys which have hte highest calories and subtract the calories needed by the predator
         for(int i = 0; i < preyDivisorCounter; i++){
@@ -109,6 +112,8 @@ public class Logic {
             System.out.println("Prey: " + preyList.get(i).getName() + " -> After Feed Remaining Calories to Give" + preyList.get(i).getCalRemainGive());
             // Update the total calories eaten 
             totalEaten += calorieReduction;
+            // Check if the prey has died. This is an accumulator, if it gets true at least once, it never falls back to false.
+            preyDied |= isOrganismDead(preyList.get(i));
         }
 
         // Update the predators calories needed 
@@ -123,8 +128,14 @@ public class Logic {
         }
         // Print the final results
         System.out.println("Predator: " + predator.getName() + " -> Calories Needed After Feeding: " + predator.getCalRemainNeed());
-        System.out.println("Predator: " + predator.getName() + "is Hungry?" + predator.getIsHungry());
+        System.out.println("Predator: " + predator.getName() + "is Hungry? " + predator.getIsHungry());
         System.out.println("--- Feeding step concluded ----");
+
+        // If no prey has died AND the predator is not hungry then it is a sucess.
+        if(!preyDied && !predator.getIsHungry()){
+            return true;
+        } 
+        return false; 
     }
 
     // Helper method to sort the preys in order of highest amount of calories provide 
@@ -219,7 +230,6 @@ public class Logic {
         }
         return name;
     }
-
 
     //  Helper method to check if an Organism is dead which happens when the remaining calories given is 0
     public static boolean isOrganismDead(Organism organism){
