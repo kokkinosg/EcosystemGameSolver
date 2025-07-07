@@ -80,7 +80,7 @@ public class Logic {
     public static boolean performFeed(List<Organism> preyList, Organism predator){
 
         System.out.println("--- Feeding Step Initiated ----");
-        System.out.println("Predator: " + predator.getName() + " -> Calories Needed: " + predator.getCalRemainNeed());
+        System.out.println("Predator: " + predator.getName() + " -> Calories Needed: " + predator.getCalRemainNeed() + " -> Calories Given: " + predator.getCalRemainGive());
 
         // Sort the preyList by the number of Remaining calories to give
         preyList = sortPreyByRemainCalProvided(preyList);
@@ -110,6 +110,7 @@ public class Logic {
             preyList.get(i).setCalRemainGive(resultCalRemainGive);
             // Print the prey details
             System.out.println("Prey: " + preyList.get(i).getName() + " -> After Feed Remaining Calories to Give: " + preyList.get(i).getCalRemainGive());
+            System.out.println("Prey: " + " -> is dead? " + isOrganismDead(preyList.get(i)));
             // Update the total calories eaten 
             totalEaten += calorieReduction;
             // Check if the prey has died. This is an accumulator, if it gets true at least once, it never falls back to false.
@@ -129,7 +130,7 @@ public class Logic {
         }
         // Print the final results
         System.out.println("Predator: " + predator.getName() + " -> Calories Needed After Feeding: " + predator.getCalRemainNeed());
-        System.out.println("Predator: " + predator.getName() + "is Hungry? " + predator.getIsHungry());
+        System.out.println("Predator: " + predator.getName() + " -> is Hungry? " + predator.getIsHungry());
         System.out.println("--- Feeding step concluded ----");
 
         // If no prey has died AND the predator is not hungry then it is a sucess.
@@ -297,6 +298,7 @@ public class Logic {
         for (Organism o : pool) {
             o.setCalRemainGive(o.getCalGive());
             o.setCalRemainNeed(o.getCalNeed());
+            o.setIsFedOnce(false);
             
             // Set the hunger status of animals and producers
             if("animal".equalsIgnoreCase(o.getType())){
