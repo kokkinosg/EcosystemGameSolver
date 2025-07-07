@@ -14,7 +14,8 @@ public class Organism{
     private float calRemainNeed;       // calories remaining to eat. At start is the same as calNeed
     private List<String> eats;         // names of organisms it eats
     private List<String> eatenBy;      // names of organisms that eat it
-    private boolean isHungry;          // At the start all animals are hungry. Once they eat, they are NOT hungry 
+    private boolean isHungry;          // At the start all animals are hungry. Once they eat all calories, they are NOT hungry 
+    private boolean isFedOnce;         // Tracker to see which animal has been fed. Note, that all animals only eat once. 
     private String cond1;              // habitat condition #1 eg: Temperature or Humidity
     private String cond2;              // habitat condition #2
     private String cond3;              // habitat condition #3
@@ -25,8 +26,6 @@ public class Organism{
         // Initialise lists so they’re never null
         this.eats    = new ArrayList<>();
         this.eatenBy = new ArrayList<>();
-
-    
     }
 
     // Getters
@@ -39,6 +38,7 @@ public class Organism{
     public List<String> getEats()     { return eats; }
     public List<String> getEatenBy()  { return eatenBy; }
     public boolean  getIsHungry() {return isHungry;}
+    public boolean getIsFedOnce() {return isFedOnce;}
     public String getCond1()     { return cond1; }
     public String getCond2()     { return cond2; }
     public String getCond3()     { return cond3; }
@@ -53,9 +53,11 @@ public class Organism{
             // Also set the isHungry to false if it is producers otherwise is true. 
             this.type = type; 
             this.isHungry = false;
+            this.isFedOnce = false;
         } else {
             this.type = "animal";
             this.isHungry = true;
+            this.isFedOnce = false;
         }
     }
     public void setCalNeed(float calNeed) {
@@ -74,7 +76,8 @@ public class Organism{
     public void setCalRemainGive(float calRemainGive)           { this.calRemainGive = calRemainGive; }
     public void setEats(List<String> eats)          { this.eats = (eats != null) ? new ArrayList<>(eats) : new ArrayList<>(); }
     public void setEatenBy(List<String> eatenBy)    { this.eatenBy = (eatenBy != null) ? new ArrayList<>(eatenBy) : new ArrayList<>(); }
-    public void setIsHungry(boolean isHungry)       { this.isHungry = isHungry;}
+    public void setIsHungry(boolean isHungry)       { this.isHungry = isHungry;};
+    public void setIsFedOnce(boolean isFedOnce)       { this.isFedOnce = isFedOnce;};
     public void setCond1(String cond1)              { this.cond1 = cond1; }
     public void setCond2(String cond2)              { this.cond2 = cond2; }
     public void setCond3(String cond3)              { this.cond3 = cond3; }

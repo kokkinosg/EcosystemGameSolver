@@ -103,13 +103,13 @@ public class Logic {
             // Get the calories remaining for each prey
             float calRemainGive = preyList.get(i).getCalRemainGive();
             // Print the prey details
-            System.out.println("Prey: " + preyList.get(i).getName() + " -> Before Feed Remaining Calories to Give" + calRemainGive);
+            System.out.println("Prey: " + preyList.get(i).getName() + " -> Before Feed Remaining Calories to Give: " + calRemainGive);
             // Make the subtraction
             float resultCalRemainGive = calRemainGive - calorieReduction;
             // Update the calories remainig to give 
             preyList.get(i).setCalRemainGive(resultCalRemainGive);
             // Print the prey details
-            System.out.println("Prey: " + preyList.get(i).getName() + " -> After Feed Remaining Calories to Give" + preyList.get(i).getCalRemainGive());
+            System.out.println("Prey: " + preyList.get(i).getName() + " -> After Feed Remaining Calories to Give: " + preyList.get(i).getCalRemainGive());
             // Update the total calories eaten 
             totalEaten += calorieReduction;
             // Check if the prey has died. This is an accumulator, if it gets true at least once, it never falls back to false.
@@ -119,7 +119,8 @@ public class Logic {
         // Update the predators calories needed 
         predator.setCalRemainNeed(predator.getCalRemainNeed()-totalEaten);
 
-        // Update the predator's hunger status. 
+        // Update the predator's hunger and feed status. 
+        predator.setIsFedOnce(true);
         // If there are no more calories needed then the predator is not hungry
         if(predator.getCalRemainNeed()<=0){
             predator.setIsHungry(false);
@@ -219,13 +220,16 @@ public class Logic {
 
         // Go over each animal and compare the calories it provides. At the end it will ensure that we got the name of the organism with the highest 
         for(Organism organism : organismsList){
-            // Get the calories given by the current organism in the list
-            float calRemainingGiveCurrent = organism.getCalRemainGive();
-            //Compare it with the cal given of hte previous prey and if it is larger, then this animal feeds before the previous
-            if(calRemainingGiveCurrent>calRemainingGivePrev){
-                name = organism.getName();
-                // Update the previous best with current best
-                calRemainingGivePrev = calRemainingGiveCurrent;
+            // Ignore all producers and all animals which have already been fed
+            if ("animal".equalsIgnoreCase(organism.getType()) && organism.getIsFedOnce() == false){
+                // Get the calories given by the current organism in the list
+                float calRemainingGiveCurrent = organism.getCalRemainGive();
+                //Compare it with the cal given of hte previous prey and if it is larger, then this animal feeds before the previous
+                if(calRemainingGiveCurrent>calRemainingGivePrev){
+                    name = organism.getName();
+                    // Update the previous best with current best
+                    calRemainingGivePrev = calRemainingGiveCurrent;
+                }
             }
         }
         return name;
@@ -283,6 +287,7 @@ public class Logic {
         sample.addAll(producers);
         sample.addAll(animals.subList(0, neededAnimals));
 
+        System.out.println("Sample of 3 producers and 5 animals collected!");
         return sample;
     }
 
@@ -300,6 +305,7 @@ public class Logic {
                 o.setIsHungry(false);
             }
         }
+        System.out.println("Resetting organism data completed!");
     }
 }
 
