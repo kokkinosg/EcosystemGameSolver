@@ -91,7 +91,7 @@ public final class Controller {
                     if (prey.isEmpty()) break;
 
                     boolean ok = Logic.performFeed(prey, predator);
-                    if (!ok) continue outer;                // predator died -> resample
+                    if (!ok) continue outer;                // prey died or predator is still hungry after a feeding cycle -> resample
                 }
 
                 boolean allFed = sample.stream()
@@ -104,8 +104,6 @@ public final class Controller {
                 }
                 // else: try another sample
             }
-
-            
         }
     }
 }
