@@ -64,46 +64,57 @@ public final class Controller {
             // Define a success boolean where when true it means we found a sustainable chain of 8 animals
             boolean isChainSustainable = false;
 
+            // 6. Get all possible combinations of 8 organisms where all producers are always included
+            List<List<Organism>> allPossibleCombo = Logic.allEightWayCombos(processedList); 
+            System.out.println("There are " + allPossibleCombo.size() + " possible combinations of 8 organisms.");
+
+
+            int loopCounter = 0;
             outer:
-            while (!isChainSustainable) {
+            for (List<Organism> sample : allPossibleCombo) {
 
-                // Ensure that we start with fresh organism satus and calories
-                Logic.resetOrganisms(processedList);       
-                // 6. Get a sample of 8 organisms (3 produces + 5 random animals from the processed list)
-                List<Organism> sample = Logic.sampleUpToEight(processedList);
+                Logic.resetOrganisms(processedList);   // reset master pool. 
+                loopCounter++; // Increase the loop counter
+                
+                System.out.println();
+                System.out.println();
+                System.out.println(" Testing sample " + loopCounter + " / " + allPossibleCombo.size());
 
-                // Check that we got some data
-                if (sample.isEmpty()) continue;             // not enough animals
+                
+                // Count the number of animals in my sample
+                int animalCounter = Logic.countAnimals(sample);
+                
+                // five feeding steps (one per animal) – you *have* five animals by construction
+                for (int cycle = 0; cycle < animalCounter; cycle++) {
 
-                // 7. Start 5 feeding cycles, one for each animal.
-                for (int cycle = 0; cycle < 5; cycle++) {
-
-                    // Get the name of the animal which eats now. It is the one with hte highest calories provided
                     String predatorName = Logic.nameOfAnimalHighestCaloriesProvided(sample);
                     Organism predator   = Logic.getOrganismByName(predatorName, sample);
 
-                    // If the predator is dead, break the loop. The ecosystem failed. 
-                    if (predator == null || Logic.isOrganismDead(predator)) break;
+                    if (predator == null || Logic.isOrganismDead(predator)) {
+                        continue outer;                // sample fails, try next combo
+                    }
 
-                    // Get the prey of that predator
                     List<Organism> prey = Logic.listOfPrey(sample, predatorName);
-                    // If there is no prey, then break because it will never satisfy its needs.
-                    if (prey.isEmpty()) break;
+                    if (prey.isEmpty()) continue outer;
 
                     boolean ok = Logic.performFeed(prey, predator);
-                    if (!ok) continue outer;                // prey died or predator is still hungry after a feeding cycle -> resample
+                    if (!ok) {
+                        continue outer;           // prey died OR predator still hungry
+                    }
                 }
 
-                boolean allFed = sample.stream()
-                        .noneMatch(Organism::getIsHungry);
-
+                // after X cycles, check hunger
+                boolean allFed = sample.stream().noneMatch(Organism::getIsHungry);
                 if (allFed) {
                     System.out.println("✅ Sustainable chain found");
                     View.printOrganismTable(sample);
-                    break;                                  // success
+                    isChainSustainable = true;         // <-- set flag
+                    break;                             // leave outer loop
                 }
-                // else: try another sample
             }
+            
+            if (!isChainSustainable)
+                System.out.println("❌ No sustainable chain found in the tested combos.");
         }
     }
 }

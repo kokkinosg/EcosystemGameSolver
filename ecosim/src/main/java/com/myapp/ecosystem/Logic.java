@@ -3,10 +3,10 @@
 package com.myapp.ecosystem;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Logic {
 
@@ -131,13 +131,21 @@ public class Logic {
         // Print the final results
         System.out.println("Predator: " + predator.getName() + " -> Calories Needed After Feeding: " + predator.getCalRemainNeed());
         System.out.println("Predator: " + predator.getName() + " -> is Hungry? " + predator.getIsHungry());
-        System.out.println("--- Feeding step concluded ----");
 
         // If no prey has died AND the predator is not hungry then it is a sucess.
         if(!preyDied && !predator.getIsHungry()){
+            System.out.println("--- Feeding step Success. Predator is not hungry and Prey survived ----");
             return true;
-        } 
-        return false; 
+        } else if (preyDied && !predator.getIsHungry()) {
+            System.out.println("--- Feeding step failed. Predator is not hungry but Prey died");
+            return false; 
+        } else if (preyDied && predator.getIsHungry()){
+            System.out.println("--- Feeding step failed. Predator is still hungry and Prey died");
+            return false;
+        } else {
+             System.out.println("--- Feeding step failed. Predator is still hungry and Prey survived");
+            return false; 
+        }
     }
 
     // Helper method to sort the preys in order of highest amount of calories provide 
@@ -244,54 +252,6 @@ public class Logic {
         return false;
     }
 
-    /**
-     * Build an 8-organism sample with the following rules:
-     *
-     * 1. **Keep every producer** if the total number of producers ≤ 8.
-     *    • Fill the remaining slots (8 – #producers) with random animals.
-     * 2. **If there are > 8 producers**, pick a random subset of **exactly 8**
-     *    producers and return them (no animals included).
-     * 3. If producers ≤ 8 but the pool does not contain enough animals to
-     *    reach eight organisms, the method returns {@code List.of()}.
-     *
-     * The original list is never modified.
-     */
-    public static List<Organism> sampleUpToEight(List<Organism> pool) {
-
-        if (pool == null || pool.isEmpty()) return List.of();
-
-        // ── Split pool into producers and animals ───────────────────────────
-        List<Organism> producers = pool.stream()
-                .filter(o -> "producer".equalsIgnoreCase(o.getType()))
-                .collect(Collectors.toCollection(ArrayList::new));
-
-        List<Organism> animals = pool.stream()
-                .filter(o -> "animal".equalsIgnoreCase(o.getType()))
-                .collect(Collectors.toCollection(ArrayList::new));
-
-        // ── Case 1: more than 8 producers → return 8 random producers ───────
-        if (producers.size() > 8) {
-            Collections.shuffle(producers);              // random subset
-            return new ArrayList<>(producers.subList(0, 8));
-        }
-
-        // ── Case 2: ≤ 8 producers → need (8 - p) animals ────────────────────
-        int neededAnimals = 8 - producers.size();
-
-        if (animals.size() < neededAnimals) {
-            // Not enough animals to build a complete group of eight
-            return List.of();
-        }
-
-        Collections.shuffle(animals);
-        List<Organism> sample = new ArrayList<>(8);
-        sample.addAll(producers);
-        sample.addAll(animals.subList(0, neededAnimals));
-
-        System.out.println("Sample of 3 producers and 5 animals collected!");
-        return sample;
-    }
-
     // Method to reset all orgnanisms to initial status 
     static void resetOrganisms(List<Organism> pool) {
 
@@ -308,6 +268,55 @@ public class Logic {
             }
         }
         System.out.println("Resetting organism data completed!");
+    }
+
+    // Return how many elements in the list are animals (type = "animal"). 
+    public static int countAnimals(List<Organism> pool) {
+        if (pool == null) return 0;
+        return (int) pool.stream()
+                        .filter(o -> "animal".equalsIgnoreCase(o.getType()))
+                        .count();
+    }
+
+    /**
+     * Enumerate every 8-organism subset of the {@code pool}.
+     *
+     * Preconditions
+     * ─────────────
+     * • n = pool.size()
+     *   – If n < 8  ⇒  impossible → returns {@code List.of()}.
+     *
+     * Size of the result list is C(n, 8).
+     * Each inner list is an unmodifiable snapshot of one unique combination.
+     */
+    public static List<List<Organism>> allEightWayCombos(List<Organism> pool) {
+
+        /* 0 ─ validation ---------------------------------------------------- */
+        if (pool == null || pool.size() < 8) return List.of();
+
+        int n = pool.size();
+        List<List<Organism>> combos = new ArrayList<>();
+
+        /* 1 ─ index combination generator (lexicographic) ------------------- */
+        int[] idx = IntStream.range(0, 8).toArray();   // {0,1,2,3,4,5,6,7}
+
+        while (idx[0] <= n - 8) {
+
+            /* build one 8-organism combo from current indices */
+            List<Organism> combo = new ArrayList<>(8);
+            for (int i : idx) combo.add(pool.get(i));
+            combos.add(List.copyOf(combo));            // immutable snapshot
+
+            /* ---- next combination ---------------------------------------- */
+            int i = 7;                                 // right-most slot
+            while (i >= 0 && idx[i] == n - 8 + i) i--;
+            if (i < 0) break;                          // done
+            idx[i]++;                                  // bump this slot
+            for (int j = i + 1; j < 8; j++)
+                idx[j] = idx[j - 1] + 1;               // reset tail
+        }
+
+        return combos;                                 // size = C(n,8)
     }
 }
 
