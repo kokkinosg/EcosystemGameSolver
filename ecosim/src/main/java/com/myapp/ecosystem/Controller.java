@@ -29,7 +29,7 @@ public final class Controller {
 
             // ── 1  prompt for file path ──────────────────────────────────
             // Give a default location 
-            View.printLine("This is a suggested path: " + "/Users/george/Downloads/SampleData.xlsx");
+            View.printLine("This is a suggested path: " + "/Users/george/Downloads/solve.xlsx");
             String pathStr = View.getUserInput("Path to .xlsx file: ", in);
             Path   file    = Paths.get(pathStr.trim());
 
