@@ -78,7 +78,7 @@ public final class ExcelReader {
 
     // Helper Functions
 
-        /** Build a map: lowercase-header-name → column index (0-based). */
+    // Build a map: lowercase-header-name → column index (0-based). 
     private static Map<String, Integer> mapHeader(Row header) {
         Map<String, Integer> m = new HashMap<>();
         for (Cell c : header) {
@@ -116,7 +116,7 @@ public final class ExcelReader {
         }
     }
 
-    /** Read a cell as float; blank / bad number → 0 f. */
+    // Read a cell as float; blank / bad number → 0 f. */
     private static float flt(Row row, Map<String,Integer> col, String key) {
         String s = str(row, col, key);          // reuse str() to get raw text
         if (s.isEmpty()) return 0f;
@@ -125,7 +125,7 @@ public final class ExcelReader {
     }
 
 
-    /** Read a comma-separated cell into a trimmed List<String>. */
+    // Read a comma-separated cell into a trimmed List<String>. */
     private static List<String> list(Row row, Map<String,Integer> col, String key) {
         String raw = str(row, col, key);         // full cell text
         if (raw.isEmpty()) return List.of();     // empty cell → empty list

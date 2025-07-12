@@ -30,7 +30,8 @@ Outside of software:
 1.	Pick one habitat tile
     Decide the depth / temperature / salinity range you want to play with.
 	
-2.	Build an Excel sheet (one row per species) (need to add template)
+2.	Build an Excel sheet (one row per species) with the following header 
+ name | type | calNeed | calGive | eats | eatenBy | cond1 | cond2 | cond3 | cond4
 	
 3.	Save the file somewhere convenient (e.g. ~/Downloads/MyHabitat.xlsx).
 	

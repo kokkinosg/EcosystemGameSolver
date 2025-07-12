@@ -278,26 +278,16 @@ public class Logic {
                         .count();
     }
 
-    /**
-     * Enumerate every 8-organism subset of the {@code pool}.
-     *
-     * Preconditions
-     * ─────────────
-     * • n = pool.size()
-     *   – If n < 8  ⇒  impossible → returns {@code List.of()}.
-     *
-     * Size of the result list is C(n, 8).
-     * Each inner list is an unmodifiable snapshot of one unique combination.
-     */
+    // Create a list of lists where each sublist is a unique combination of 8 organisms. This is the method to create all possible unique food chains. 
     public static List<List<Organism>> allEightWayCombos(List<Organism> pool) {
 
-        /* 0 ─ validation ---------------------------------------------------- */
+        // Null check
         if (pool == null || pool.size() < 8) return List.of();
 
         int n = pool.size();
         List<List<Organism>> combos = new ArrayList<>();
 
-        /* 1 ─ index combination generator (lexicographic) ------------------- */
+        /// index combination generator (lexicographic) ------------------- */
         int[] idx = IntStream.range(0, 8).toArray();   // {0,1,2,3,4,5,6,7}
 
         while (idx[0] <= n - 8) {

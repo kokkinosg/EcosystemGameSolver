@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 
 /**
- * The “C” in MVC.  Owns the Scanner, delegates all I/O to {@link View},
+ * The “C” in MVC.  Owns the Scanner, delegates all I/O to View,
  * and coordinates a single-step workflow:
  *
  *  1. ask the user for the path to an Excel file
@@ -51,7 +51,7 @@ public final class Controller {
             // Print a clean line 
             System.out.println();
 
-            // // - 4 Do a quick check to identify which animals are useless in a first iteration
+            // - 4 Do a quick check to identify which animals are useless in a first iteration
             // for(Organism organism : tabulatedData){
             //     Logic.canPredatorSatisfyCalNeed(organism, tabulatedData);
             // }
