@@ -25,20 +25,30 @@ I tried to use a Model View Controller (MVC) architecture + an infrastructure la
 
 ## How to use
 Outside of software:
-	1.	Pick one habitat tile
-            Decide the depth / temperature / salinity range you want to play with.
-	2.	Build an Excel sheet (one row per species) (need to add template)
-	3.	Save the file somewhere convenient (e.g. ~/Downloads/MyHabitat.xlsx).
-	4.	Run the program
+
+1.	Pick one habitat tile
+    Decide the depth / temperature / salinity range you want to play with.
+	
+2.	Build an Excel sheet (one row per species) (need to add template)
+	
+3.	Save the file somewhere convenient (e.g. ~/Downloads/MyHabitat.xlsx).
+	
+4.	Run the program
 
 ➜  What the software does
-	1.	Load & validate the spreadsheet into Organism objects.
-	2.	Prune any animal that could never meet its calorie need with the species provided.
-	3.	Generate every 8-organism subset from the remaining pool.
-	4.	Simulate feeding on each subset, one predator at a time:
-    	•	Highest-calorie hungry animal eats equal shares from its richest prey.
-    	•	A combination fails if any prey is eaten to zero or a predator stays hungry.
-	5.	Stop at the first sustainable chain and print a neatly formatted table.
+
+1.	Load & validate the spreadsheet into Organism objects.
+	
+2.	Prune any animal that could never meet its calorie need with the species provided.
+	
+3.	Generate every 8-organism subset from the remaining pool.
+	
+4.	Simulate feeding on each subset, one predator at a time:
+    •	Highest-calorie hungry animal eats equal shares from its richest prey.
+    •	A combination fails if any prey is eaten to zero or a predator stays hungry.
+	
+5.	Stop at the first sustainable chain and print a neatly formatted table.
+
 If none works, it prints a red ❌ summary instead.
 
 That’s all—adjust your Excel file or habitat assumptions and run again to explore different ecosystems.
