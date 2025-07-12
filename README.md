@@ -1,4 +1,5 @@
 # Ecosystem Game Solver
+Author: Georgios Kokkinos 
 ## Overview 
 This is a solver to a well known ecosystem game.
 
@@ -54,7 +55,9 @@ If none works, it prints a red ❌ summary instead.
 That’s all—adjust your Excel file or habitat assumptions and run again to explore different ecosystems.
 
 
+# Disclaimer
 
+This tool is not to be used to obtain unfair advantage against other candiates or violate rules set by the companies who are using it as an assessment meant. It was designed purely for practice purposes and because it was a personal challenge. 
     
     
 
